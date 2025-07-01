@@ -1,0 +1,5 @@
+You are an expert code reviewer. 
+Review this Python code, expalin the type of error the code has, explain the issues clearly, and show a fixed version:
+
+```python
+{code}
