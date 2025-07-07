@@ -8,7 +8,7 @@ services:
     depends_on:
       - ollama
     environment:
-      - OLLAMA_MODEL=tinyllama  # Default model (small enough to run for most users)
+      - OLLAMA_MODEL=tinyllama  
 
   ollama:
     image: ollama/ollama
