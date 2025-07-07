@@ -1,25 +1,25 @@
+import os
 import requests
 from pathlib import Path
 
-# locate prompts folder
 PROMPT_DIR = Path(__file__).parent.parent.parent / "prompts"
 TEMPLATE = (PROMPT_DIR / "code_review.txt").read_text()
 
 def review_code(code: str) -> str:
-    # render the prompt
     prompt = TEMPLATE.format(code=code)
+    model_name = os.getenv("OLLAMA_MODEL", "tinyllama")  
 
-    url = "http://ollama:11434/generate"
-    payload = {
-        "model": "codellama:13b",
-        "prompt": prompt,
-        "stream": False,           # return a single JSON response
-        # you can add "temperature", "max_tokens", etc. here too
-    }
+    try:
+        resp = requests.post(
+        "http://ollama:11434/api/generate",
+        json={
+            "model": model_name,
+            "prompt": prompt,
+            "stream": False  
+        },
+    )
 
-    resp = requests.post(url, json=payload)
-    resp.raise_for_status()
-
-    data = resp.json()
-    # legacy generate returns { "model": ..., "response": "...", ... }
-    return data.get("response", "")
+        resp.raise_for_status()
+        return resp.json().get("response", "")
+    except requests.RequestException as e:
+        raise RuntimeError(f"Ollama API error: {e}")
