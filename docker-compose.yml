@@ -1,18 +1,13 @@
+
+
 services:
   backend:
-    build:
+    build: 
       context: .
       dockerfile: backend/Dockerfile
     ports:
       - "8000:8000"
-    depends_on:
-      - ollama
-    environment:
-      - OLLAMA_MODEL=tinyllama  
-
-  ollama:
-    image: ollama/ollama
-    ports:
-      - "11434:11434"
+    env_file:
+      - ./backend/.env
     volumes:
-      - /home/juliane/.ollama:/root/.ollama
+      - ./backend:/app
