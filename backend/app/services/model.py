@@ -1,4 +1,3 @@
-
 import os
 from pathlib import Path
 import openai
@@ -10,14 +9,14 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 PROMPT_DIR = Path(__file__).parent.parent.parent / "prompts"
 TEMPLATE = (PROMPT_DIR / "code_review.txt").read_text()
 
-def review_code(code: str) -> str:
-    prompt = TEMPLATE.format(code=code)
+def review_code(code: str, language: str) -> str:
+    prompt = TEMPLATE.format(language=language, code=code)
 
     try:
         response = openai.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are an expert Python code reviewer."},
+                {"role": "system", "content": f"You are an expert {language} code reviewer."},
                 {"role": "user", "content": prompt}
             ],
             temperature=0.3

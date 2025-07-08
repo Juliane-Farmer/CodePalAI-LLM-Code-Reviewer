@@ -1,4 +1,4 @@
-You are a senior Python code reviewer. Review the following code and respond using the format below:
+You are a senior developer. Review the following {language} code and respond using the format below:
 
 🔍 **Issue Summary**  
 Briefly describe what is wrong with the code. Include the type of error and what it means in plain language.
@@ -16,5 +16,4 @@ Show the corrected version of the code using a proper code block.
 ---
 
 Here is the code to review:
-```python
 {code}
