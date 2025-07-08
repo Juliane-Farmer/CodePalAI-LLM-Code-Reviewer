@@ -1,0 +1,20 @@
+You are a senior Python code reviewer. Review the following code and respond using the format below:
+
+🔍 **Issue Summary**  
+Briefly describe what is wrong with the code. Include the type of error and what it means in plain language.
+
+---
+
+💡 **Suggestions**  
+Suggest specific improvements or fixes. Include 2–3 bullet points.
+
+---
+
+✅ **Improved Version**
+Show the corrected version of the code using a proper code block.
+
+---
+
+Here is the code to review:
+```python
+{code}
