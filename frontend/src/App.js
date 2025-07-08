@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import "./App.css";
 
 function App() {
+  const [loading, setLoading] = useState(false);
   const [code, setCode] = useState('');
   const [result, setResult] = useState('');
 
   const handleReview = async () => {
+    setLoading(true);
+    setResult('');  
+
     try {
       const response = await fetch('http://localhost:8000/review', {
         method: 'POST',
@@ -19,8 +23,11 @@ function App() {
       setResult(data.result || data.detail || 'No response.');
     } catch (error) {
       setResult('Error: Failed to fetch');
+    } finally {
+      setLoading(false);
     }
   };
+
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center px-4">
@@ -35,10 +42,39 @@ function App() {
 
       <button
         onClick={handleReview}
-        className="mb-6 px-6 py-2 bg-indigo-600 text-white font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+        disabled={loading}
+        className={`mb-2 px-6 py-2 font-medium rounded-md focus:outline-none transition ${
+          loading
+            ? 'bg-gray-500 cursor-not-allowed'
+            : 'bg-indigo-600 hover:bg-indigo-700 text-white focus:ring-2 focus:ring-indigo-400'
+        }`}
       >
-        Review
+        {loading ? 'Reviewing...' : 'Review'}
       </button>
+
+      {loading && (
+        <div className="flex items-center justify-center mb-4">
+          <svg className="animate-spin h-6 w-6 text-pink-400" viewBox="0 0 24 24">
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+              fill="none"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v8z"
+            />
+          </svg>
+          <span className="ml-2 text-pink-300">Analyzing code...</span>
+        </div>
+      )}
+
+
 
       <div className="w-full max-w-2xl bg-gray-800 p-4 rounded-md border border-gray-700">
         <h2 className="text-pink-400 font-semibold mb-2">Review Result:</h2>
