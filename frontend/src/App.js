@@ -1,14 +1,16 @@
+
 import React, { useState } from "react";
 import "./App.css";
 
 function App() {
   const [loading, setLoading] = useState(false);
   const [code, setCode] = useState('');
+  const [language, setLanguage] = useState('Python');
   const [result, setResult] = useState('');
 
   const handleReview = async () => {
     setLoading(true);
-    setResult('');  
+    setResult('');
 
     try {
       const response = await fetch('http://localhost:8000/review', {
@@ -16,7 +18,7 @@ function App() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ code }),
+        body: JSON.stringify({ code, language }),
       });
 
       const data = await response.json();
@@ -28,15 +30,26 @@ function App() {
     }
   };
 
-
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center px-4">
-      <h1 className="text-pink-400 text-xl font-semibold mb-4">💬 Code Review with AI</h1>
+      <h1 className="text-pink-400 text-xl font-semibold mb-4">CodePalAI – Your AI Code Review Assistant</h1>
+
+      <select
+        value={language}
+        onChange={(e) => setLanguage(e.target.value)}
+        className="mb-4 p-2 rounded-md bg-gray-800 text-white border border-gray-600"
+      >
+        <option value="Python">Python</option>
+        <option value="JavaScript">JavaScript</option>
+        <option value="Java">Java</option>
+        <option value="C++">C++</option>
+        <option value="C#">C#</option>
+      </select>
 
       <textarea
         value={code}
         onChange={(e) => setCode(e.target.value)}
-        placeholder="Paste your Python code here..."
+        placeholder="Paste your code here..."
         className="w-full max-w-2xl h-52 p-4 text-sm bg-gray-800 text-white rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none mb-4"
       ></textarea>
 
@@ -73,8 +86,6 @@ function App() {
           <span className="ml-2 text-pink-300">Analyzing code...</span>
         </div>
       )}
-
-
 
       <div className="w-full max-w-2xl bg-gray-800 p-4 rounded-md border border-gray-700">
         <h2 className="text-pink-400 font-semibold mb-2">Review Result:</h2>
