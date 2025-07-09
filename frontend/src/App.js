@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import "./App.css";
 
@@ -7,6 +6,7 @@ function App() {
   const [code, setCode] = useState('');
   const [language, setLanguage] = useState('Python');
   const [result, setResult] = useState('');
+  const [copied, setCopied] = useState(false);
 
   const handleReview = async () => {
     setLoading(true);
@@ -30,9 +30,17 @@ function App() {
     }
   };
 
+  const handleCopyImprovedCode = () => {
+    const match = result.match(/```(?:\w*\n)?([\s\S]*?)```/);
+    const codeToCopy = match ? match[1].trim() : '';
+    navigator.clipboard.writeText(codeToCopy);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center px-4">
-      <h1 className="text-pink-400 text-xl font-semibold mb-4">CodePalAI – Your AI Code Review Assistant</h1>
+    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-start px-4 pt-10">
+      <h1 className="text-pink-400 text-xl font-semibold mb-6">CodePalAI – Your AI Code Review Assistant</h1>
 
       <select
         value={language}
@@ -47,16 +55,21 @@ function App() {
       </select>
 
       <textarea
+        placeholder="Paste your code here..."
         value={code}
         onChange={(e) => setCode(e.target.value)}
-        placeholder="Paste your code here..."
+        rows={1}
+        onInput={(e) => {
+          e.target.style.height = 'auto';
+          e.target.style.height = `${e.target.scrollHeight}px`;
+        }}
         className="w-full max-w-2xl h-52 p-4 text-sm bg-gray-800 text-white rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none mb-4"
-      ></textarea>
+      />
 
       <button
         onClick={handleReview}
         disabled={loading}
-        className={`mb-2 px-6 py-2 font-medium rounded-md focus:outline-none transition ${
+        className={`mb-6 px-6 py-2 font-medium rounded-md focus:outline-none transition ${
           loading
             ? 'bg-gray-500 cursor-not-allowed'
             : 'bg-indigo-600 hover:bg-indigo-700 text-white focus:ring-2 focus:ring-indigo-400'
@@ -87,12 +100,23 @@ function App() {
         </div>
       )}
 
-      <div className="w-full max-w-2xl bg-gray-800 p-4 rounded-md border border-gray-700">
-        <h2 className="text-pink-400 font-semibold mb-2">Review Result:</h2>
-        <pre className="text-sm whitespace-pre-wrap">{result}</pre>
-      </div>
+      {result && (
+        <div className="w-full max-w-2xl bg-gray-800 p-4 rounded-md border border-gray-700 overflow-auto max-h-[400px]">
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-pink-400 font-semibold">Review Result:</h2>
+            <button
+              onClick={handleCopyImprovedCode}
+              className="text-sm text-pink-400 hover:underline"
+            >
+              {copied ? '✅ Copied!' : '📋 Copy Improved Code'}
+            </button>
+          </div>
+          <pre className="whitespace-pre-wrap text-sm">{result}</pre>
+        </div>
+      )}
     </div>
   );
 }
 
 export default App;
+
